@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8"/>
+<title>stefano</title>
+<style type="text/css">
+  span{
+    text-decoration: underline;
+  }
+  .acc{
+    border: 1px black solid;
+    padding: 0 5px;
+  }
+
+</style>
+</head>
+<body>
+
+
+<h1 style="display: inline-block;">Registros pendentes conquer</h1>
+<button onclick="window.location.href = 'registros.html'" style="display: inline; margin-left: 20px" id="swip" >Ver os registros relizados</button>
+<div id="lista">
+  
+</div>
+
+
+<script src="https://www.gstatic.com/firebasejs/8.7.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.7.0/firebase-analytics.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.7.0/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.7.0/firebase-firestore.js"></script>
+
+
+<script>
+  
+  // Your web app's Firebase configuration
+  var firebaseConfig = {
+    apiKey: "AIzaSyCx_GK5zow9V4tNmiEGuhr1h9v8459lI08",
+    authDomain: "conquer-ccd68.firebaseapp.com",
+    projectId: "conquer-ccd68",
+    storageBucket: "conquer-ccd68.appspot.com",
+    messagingSenderId: "248335026542",
+    appId: "1:248335026542:web:2ae8082528b20cc9f0597f"
+  };
+  // Initialize Firebase
+  firebase.initializeApp(firebaseConfig);
+  
+  var db = firebase.firestore();
+
+
+  function buttEvent(clicker_id){
+      var washingtonRef = db.collection("citiess").doc(clicker_id);
+
+      // Set the "capital" field of the city 'DC'
+      return washingtonRef.update({
+          Registrado: "sim"
+      })
+      .then(() => {
+          window.location.reload();
+      })
+      .catch((error) => {
+          // The document probably doesn't exist.
+          console.error("Error updating document: ", error);
+      });
+    }
+
+
+  db.collection("citiess").where("Registrado", "==", "não")
+    .get()
+    .then((querySnapshot) => {
+        querySnapshot.forEach((doc) => {
+
+
+          let htmlText='';
+
+            htmlText+='<div class="acc">';
+            htmlText+='<h3>'+doc.data().Usuario+'</h3>';
+            htmlText+='<h3>Senha: <span>'+doc.data().Senha+'</span> | Email: <span>'+doc.data().Email+'</span> | Ip: <span>'+doc.data().Ip+'</span> |  Registrado: <span style="color:red">não</span></h3>';
+            htmlText+='<button id="'+doc.data().Usuario+'" style="margin: -20px 1px 5px 0px on" onclick="buttEvent(this.id)" >registrado</button>';
+            htmlText+='</div>';
+
+            document.getElementById("lista").innerHTML+=htmlText;
+
+            console.log(doc.id, " => ", doc.data().Email);
+        });
+    })
+    .catch((error) => {
+        console.log("Error getting documents: ", error);
+    });
+
+
+
+</script>
+
+
+</body>
+</html>
+
